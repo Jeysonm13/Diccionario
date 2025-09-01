@@ -1,0 +1,133 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Program
+{
+    // El diccionario principal para almacenar las palabras y sus traducciones.
+    // La clave es la palabra en inglés y el valor es la traducción en español.
+    private static Dictionary<string, string> diccionario = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "time", "tiempo" },
+        { "person", "persona" },
+        { "year", "año" },
+        { "way", "camino / forma" },
+        { "day", "día" },
+        { "thing", "cosa" },
+        { "man", "hombre" },
+        { "world", "mundo" },
+        { "life", "vida" },
+        { "hand", "mano" },
+        { "part", "parte" },
+        { "child", "niño/a" },
+        { "eye", "ojo" },
+        { "woman", "mujer" },
+        { "place", "lugar" },
+        { "work", "trabajo" },
+        { "week", "semana" },
+        { "case", "caso" },
+        { "point", "punto / tema" },
+        { "government", "gobierno" },
+        { "company", "empresa / compañía" }
+    };
+
+    public static void Main(string[] args)
+    {
+        bool salir = false;
+        while (!salir)
+        {
+            MostrarMenu();
+            string opcion = Console.ReadLine();
+
+            switch (opcion)
+            {
+                case "1":
+                    TraducirFrase();
+                    break;
+                case "2":
+                    AgregarPalabra();
+                    break;
+                case "0":
+                    salir = true;
+                    Console.WriteLine("Saliendo del programa. ¡Hasta luego!");
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                    break;
+            }
+            Console.WriteLine();
+        }
+    }
+
+    // Muestra el menú de opciones al usuario.
+    private static void MostrarMenu()
+    {
+        Console.WriteLine("==================== MENÚ ====================");
+        Console.WriteLine("1. Traducir una frase");
+        Console.WriteLine("2. Agregar palabras al diccionario");
+        Console.WriteLine("0. Salir");
+        Console.WriteLine("==============================================");
+        Console.Write("Seleccione una opción: ");
+    }
+
+    // Procesa y traduce una frase ingresada por el usuario.
+    private static void TraducirFrase()
+    {
+        Console.WriteLine("\n--- Traductor ---");
+        Console.Write("Ingrese la frase en inglés para traducir: ");
+        string frase = Console.ReadLine();
+
+        // Convertir la frase a minúsculas y dividirla en palabras.
+        string[] palabras = frase.ToLower().Split(new char[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] fraseTraducida = new string[palabras.Length];
+
+        for (int i = 0; i < palabras.Length; i++)
+        {
+            // Limpiar la palabra de cualquier signo de puntuación al final.
+            string palabra = palabras[i].TrimEnd('.', ',', '!', '?');
+            
+            // Verificar si el diccionario contiene la palabra y traducirla.
+            if (diccionario.ContainsKey(palabra))
+            {
+                fraseTraducida[i] = diccionario[palabra];
+            }
+            else
+            {
+                // Si la palabra no está en el diccionario, mantenerla sin cambios.
+                fraseTraducida[i] = palabras[i];
+            }
+        }
+        
+        Console.WriteLine($"\nTraducción: {string.Join(" ", fraseTraducida)}");
+    }
+
+    // Permite al usuario agregar un nuevo par de palabra-traducción.
+    private static void AgregarPalabra()
+    {
+        Console.WriteLine("\n--- Agregar Palabras al Diccionario ---");
+        Console.Write("Ingrese la palabra en inglés: ");
+        string palabraIngles = Console.ReadLine().ToLower().Trim();
+
+        Console.Write("Ingrese la traducción al español: ");
+        string palabraEspanol = Console.ReadLine().ToLower().Trim();
+
+        if (!string.IsNullOrWhiteSpace(palabraIngles) && !string.IsNullOrWhiteSpace(palabraEspanol))
+        {
+            // Verificar si la palabra ya existe para evitar duplicados.
+            if (diccionario.ContainsKey(palabraIngles))
+            {
+                Console.WriteLine($"La palabra '{palabraIngles}' ya existe en el diccionario. Se actualizará la traducción.");
+                diccionario[palabraIngles] = palabraEspanol;
+            }
+            else
+            {
+                diccionario.Add(palabraIngles, palabraEspanol);
+                Console.WriteLine($"Palabra '{palabraIngles}' agregada con éxito.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Entrada inválida. Asegúrese de ingresar ambas palabras.");
+        }
+    }
+}
